@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""API extraer información """
+"""Consumimos API para extraer información ficticia"""
 import requests
 from sys import argv
 
