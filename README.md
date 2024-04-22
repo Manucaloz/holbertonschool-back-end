@@ -1,0 +1,1 @@
+Hoy aprendemos cómo obtener información de una API usando Python
