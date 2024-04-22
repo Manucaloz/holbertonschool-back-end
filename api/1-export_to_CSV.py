@@ -1,57 +1,27 @@
 #!/usr/bin/python3
-"""Consumimos API para extraer información ficticia"""
-import json
-import requests
-from sys import argv
+"""
+place holder
+"""
 
 
-def main():
-    """Consultamos el nombre y las tareas de un empleado."""
-    if len(argv) >= 2 and argv[1].isdigit():
-        id = argv[1]
+if __name__ == "__main__":
 
-        url_id = f"https://jsonplaceholder.typicode.com/users/{id}"
-        url_todos = f"https://jsonplaceholder.typicode.com/users/{id}/todos"
+    import csv
+    import requests
+    from sys import argv
 
-        response = requests.get(url_id)
-
-        if response.status_code != 200:
-            print(f"Ups... tuvimos un problema par consultar el {id}")
-            exit()
-
-        data = response.json()
-        EMPLOYEE_NAME = data['username']
-
-        response = requests.get(url_todos)
-
-        if response.status_code != 200:
-            print(f"Ups... tuvimos un problema par consultar el {id}")
-            exit()
-
-        todos = response.json()
-        list_todos = []
-        dict_todos = {}
-
-        all_tasks = [todo['title'] for todo in todos]
-        status_task = [todo['completed'] for todo in todos]
-
-        for index in range(0, len(all_tasks)):
-            dict_todos = {
-                'task': all_tasks[index],
-                'completed': status_task[index],
-                'username': EMPLOYEE_NAME}
-
-            list_todos.append(dict_todos)
-
-            employee_todos = {str(id): list_todos}
-
-        name_file_json = f'{id}.json'
-
-        with open(name_file_json, mode='w', newline='') as f:
-            json.dump(employee_todos, f, indent=4)
-    else:
-        print("Se esperaba que ingresará un ID valido")
-
-
-if __name__ == '__main__':
-    main()
+    if len(argv) < 2:
+        exit()
+    todos = requests.get(
+        "https://jsonplaceholder.typicode.com/todos?userId={}"
+        .format(argv[1]))
+    name = requests.get(
+        "https://jsonplaceholder.typicode.com/users?id={}".format(argv[1]))
+    name = name.json()
+    name = name[0]["username"]
+    todos = todos.json()
+    file_name = "{}.csv".format(argv[1])
+    with open(file_name, 'w') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_ALL)
+        for todo in todos:
+            writer.writerow([argv[1], name, todo['completed'], todo['title']])
